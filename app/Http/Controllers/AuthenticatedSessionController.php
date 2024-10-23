@@ -67,7 +67,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-
+        dd($request->all());
         // Validate reCAPTCHA and terms and conditions
         $validator = Validator::make($request->all(), [
             'recaptcha_token' => ['required', new Recaptcha],
