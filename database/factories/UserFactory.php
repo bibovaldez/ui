@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Features;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -40,6 +42,17 @@ class UserFactory extends Factory
     }
 
     /**
+     * Configure the model factory.
+     */
+    public function configure()
+    {
+        return $this->afterCreating(function (User $user) {
+            // Default role is 'user'
+            $user->assignRole('user');
+        });
+    }
+
+    /**
      * Indicate that the model's email address should be unverified.
      */
     public function unverified(): static
@@ -49,6 +62,27 @@ class UserFactory extends Factory
         ]);
     }
 
+    /**
+     * Create a super admin user
+     */
+    public function superAdmin(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            $user->syncRoles(['super_admin']);
+        });
+    }
+
+    /**
+     * Create a sub admin user
+     */
+    public function subAdmin(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            $user->syncRoles(['sub_admin']);
+        });
+    }
+
+    
     /**
      * Indicate that the user should have a personal team.
      */

@@ -67,10 +67,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        dd($request->all());
         // Validate reCAPTCHA and terms and conditions
         $validator = Validator::make($request->all(), [
-            'recaptcha_token' => ['required', new Recaptcha],
+            // 'recaptcha_token' => ['required', new Recaptcha],
             // terms and conditions
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ]);
@@ -89,7 +88,7 @@ class AuthenticatedSessionController extends Controller
             Cache::forget("{$throttleKey}:timer");
             Cache::forget("recent_attempts:{$email}");
 
-            $this->Log_activity($email, $ip);
+            // $this->Log_activity($email, $ip);
             return app(LoginResponse::class);
         });
     }
@@ -117,7 +116,7 @@ class AuthenticatedSessionController extends Controller
         $user = \App\Models\User::where('email', $request->email)->first();
         $isVerified = $user && $user->hasVerifiedEmail();
         // check if the user is in invited state
-        $isInvited = $user && \App\Models\TeamInvitation::where('email', $user->email)->exists();
+        // $isInvited = $user && \App\Models\TeamInvitation::where('email', $user->email)->exists();
         return (new Pipeline(app()))->send($request)->through(array_filter([
             config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
             config('fortify.lowercase_usernames') ? CanonicalizeUsername::class : null,

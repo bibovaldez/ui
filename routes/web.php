@@ -20,6 +20,10 @@ use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
 use Laravel\Fortify\Http\Controllers\TwoFactorSecretKeyController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 use Laravel\Fortify\RoutePath;
+use App\Http\Controllers\PermissionController;
+
+
+Route::resource('permissions', PermissionController::class);
 
 
 Route::get('/', function () {
