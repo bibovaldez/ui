@@ -1,281 +1,414 @@
 <?php
 
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Volt\Component;
 use Carbon\Carbon;
 
-new #[Layout('layouts.app')] #[Title('Login')] class// <-- Here is the `empty` layout
- extends Component {
-    // Form Properties
-    #[Rule('required|string|max:50')]
-    public $batchNumber = '';
+new #[Layout('layouts.app')] #[Title('Batch Management')] class extends Component {
+    public array $batches = [];
 
-    #[Rule('required|string|max:100')]
-    public $breedType = '';
-
-    #[Rule('required|integer|min:1')]
-    public $initialQuantity = '';
-
-    #[Rule('required|integer|min:0')]
-    public $currentQuantity = '';
-
-    #[Rule('required|date')]
-    public $startDate = '';
-
-    #[Rule('required|date|after:startDate')]
-    public $expectedHarvestDate = '';
-
-    #[Rule('required|string|max:200')]
-    public $supplier = '';
-
-    public $isEditing = false;
-    public $editingId = null;
-
-    // Sample Data
-    public function with(): array
+    public function mount()
     {
-        return [
-            'batches' => $this->getSampleBatches(),
-        ];
-    }
-
-    // Sample Batches Data
-    private function getSampleBatches()
-    {
-        return [
+        // Enhanced sample data with more detailed information
+        $this->batches = [
             [
-                'id' => 1,
-                'batchNumber' => 'B2024-001',
-                'breedType' => 'Broiler',
-                'initialQuantity' => 1000,
-                'currentQuantity' => 985,
-                'startDate' => '2024-10-01',
-                'expectedHarvestDate' => '2024-11-15',
-                'supplier' => 'Premium Poultry Supplies Ltd.',
-                'status' => 'Active',
+                'id' => 'BAT-2024-001',
+                'birdType' => 'Broiler',
+                'breed' => 'Ross 308',
+                'supplier' => [
+                    'name' => 'Premium Poultry Genetics Ltd.',
+                    'contact' => [
+                        'phone' => '+1 (555) 123-4567',
+                        'email' => 'orders@ppgenetics.com',
+                        'representative' => 'John Smith',
+                        'address' => '123 Poultry Farm Road, Kansas',
+                    ],
+                    'purchaseOrder' => [
+                        'number' => 'PO-2024-0892',
+                        'date' => '2024-03-10',
+                        'terms' => 'Net 30',
+                        'value' => '$25,000',
+                    ],
+                    'healthCertificates' => [
+                        'number' => 'HC-2024-456',
+                        'issueDate' => '2024-03-12',
+                        'expiryDate' => '2024-03-19',
+                        'issuingAuthority' => 'State Veterinary Board',
+                    ],
+                ],
+                'placement' => [
+                    'arrivalDate' => '2024-03-14',
+                    'placementDate' => '2024-03-15',
+                    'quantity' => 10000,
+                    'location' => [
+                        'house' => 'Sagitarian',
+                        'section' => 'San Filipe',
+                        'capacity' => 12000,
+                    ],
+                    'conditions' => [
+                        'temperature' => '32°C',
+                        'humidity' => '65%',
+                        'ventilation' => 'Optimal',
+                        'lighting' => '23 hours',
+                    ],
+                ],
+                'initialMetrics' => [
+                    'totalBirdsPlaced' => 10000,
+                    'averageWeight' => '42g',
+                    'uniformity' => '95%',
+                    'mortalityRate' => '0.5%',
+                    'expectedYield' => [
+                        'targetWeight' => '2.5kg',
+                        'expectedFCR' => '1.65',
+                        'projectedMargin' => '22%',
+                    ],
+                    'growthTargets' => [
+                        'week1' => '185g',
+                        'week2' => '465g',
+                        'week3' => '943g',
+                        'week4' => '1580g',
+                        'week5' => '2300g',
+                        'week6' => '2500g',
+                    ],
+                ],
+                'currentStatus' => [
+                    'asOf' => '2024-04-10',
+                    'liveBirdCount' => 9875,
+                    'mortality' => [
+                        'total' => 95,
+                        'week1' => 25,
+                        'week2' => 30,
+                        'week3' => 40,
+                    ],
+                    'culling' => [
+                        'total' => 30,
+                        'reasons' => [
+                            'runts' => 12,
+                            'deformities' => 8,
+                            'injuries' => 10,
+                        ],
+                    ],
+                    'growthStatus' => [
+                        'currentWeight' => '1650g',
+                        'uniformity' => '92%',
+                        'fcr' => '1.68',
+                        'dailyGain' => '65g',
+                    ],
+                ],
+                'harvestPlanning' => [
+                    'expectedDate' => '2024-09-30',
+                    'marketPreparation' => [
+                        'withdrawalStart' => '2024-04-24',
+                        'catchingTime' => '22:00',
+                        'transportArrangements' => 'Confirmed',
+                    ],
+                    'processingSchedule' => [
+                        'date' => '2024-04-26',
+                        'shift' => 'Morning',
+                        'processingPlant' => 'Main Plant - Line 2',
+                        'capacityAllocated' => '10,000 birds',
+                    ],
+                    'targetMetrics' => [
+                        'weight' => '2.5kg ± 200g',
+                        'grade' => 'A',
+                        'yield' => '72%',
+                    ],
+                    'marketDemand' => [
+                        'buyer' => 'Metro Supermarkets',
+                        'productType' => 'Whole Bird',
+                        'pricePerKg' => '$3.25',
+                        'orderQuantity' => '9000 birds',
+                    ],
+                ],
+                'status' => 'active',
             ],
             [
-                'id' => 2,
-                'batchNumber' => 'B2024-002',
-                'breedType' => 'Layer',
-                'initialQuantity' => 800,
-                'currentQuantity' => 792,
-                'startDate' => '2024-10-10',
-                'expectedHarvestDate' => '2024-11-25',
-                'supplier' => 'Farm Fresh Genetics Co.',
-                'status' => 'Active',
+                'id' => 'BAT-2024-002',
+                'birdType' => 'Broiler',
+                'breed' => 'Cobb 500',
+                'supplier' => [
+                    'name' => 'Poultry Genetics Inc.',
+                    'contact' => [
+                        'phone' => '+1 (555) 987-6543',
+                        'email' => 'awdawd@dw.com',
+                        'representative' => 'Jane Doe',
+                        'address' => '456 Poultry Farm Road, Texas',
+                    ],
+                    'purchaseOrder' => [
+                        'number' => 'PO-2024-0893',
+                        'date' => '2024-03-15',
+                        'terms' => 'Net 30',
+                        'value' => '$28,000',
+                    ],
+                    'healthCertificates' => [
+                        'number' => 'HC-2024-457',
+                        'issueDate' => '2024-03-17',
+                        'expiryDate' => '2024-03-24',
+                        'issuingAuthority' => 'State Veterinary Board',
+                    ],
+                ],
+                'placement' => [
+                    'arrivalDate' => '2024-03-19',
+                    'placementDate' => '2024-03-20',
+                    'quantity' => 12000,
+                    'location' => [
+                        'house' => 'House B-2',
+                        'section' => 'South Wing',
+                        'capacity' => 15000,
+                    ],
+                    'conditions' => [
+                        'temperature' => '30°C',
+                        'humidity' => '70%',
+                        'ventilation' => 'Optimal',
+                        'lighting' => '22 hours',
+                    ],
+                ],
+                'initialMetrics' => [
+                    'totalBirdsPlaced' => 12000,
+                    'averageWeight' => '38g',
+                    'uniformity' => '93%',
+                    'mortalityRate' => '0.7%',
+                    'expectedYield' => [
+                        'targetWeight' => '2.3kg',
+                        'expectedFCR' => '1.70',
+                        'projectedMargin' => '18%',
+                    ],
+                    'growthTargets' => [
+                        'week1' => '175g',
+                        'week2' => '450g',
+                        'week3' => '900g',
+                        'week4' => '1500g',
+                        'week5' => '2200g',
+                        'week6' => '2400g',
+                    ],
+                ],
+                'currentStatus' => [
+                    'asOf' => '2024-04-10',
+                    'liveBirdCount' => 11800,
+                    'mortality' => [
+                        'total' => 200,
+                        'week1' => 50,
+                        'week2' => 60,
+                        'week3' => 90,
+                    ],
+                    'culling' => [
+                        'total' => 40,
+                        'reasons' => [
+                            'runts' => 15,
+                            'deformities' => 10,
+                            'injuries' => 15,
+                        ],
+                    ],
+                    'growthStatus' => [
+                        'currentWeight' => '1450g',
+                        'uniformity' => '90%',
+                        'fcr' => '1.72',
+                        'dailyGain' => '60g',
+                    ],
+                ],
+                'harvestPlanning' => [
+                    'expectedDate' => '2024-09-28',
+                    'marketPreparation' => [
+                        'withdrawalStart' => '2024-04-26',
+                        'catchingTime' => '23:00',
+                        'transportArrangements' => 'Confirmed',
+                    ],
+                    'processingSchedule' => [
+                        'date' => '2024-04-28',
+                        'shift' => 'Morning',
+                        'processingPlant' => 'Main Plant - Line 1',
+                        'capacityAllocated' => '12,000 birds',
+                    ],
+                    'targetMetrics' => [
+                        'weight' => '2.3kg ± 200g',
+                        'grade' => 'A',
+                        'yield' => '70%',
+                    ],
+                    'marketDemand' => [
+                        'buyer' => 'Fresh Market',
+                        'productType' => 'Whole Bird',
+                        'pricePerKg' => '$3.10',
+                        'orderQuantity' => '10000 birds',
+                    ],
+                ],
+                'status' => 'active',
             ],
         ];
-    }
-
-    // Form Submission
-    public function saveBatch()
-    {
-        $this->validate();
-
-        // Here you would typically save to database
-        // For now, we'll just reset the form
-        $this->reset();
-
-        $this->dispatch('batch-saved');
-    }
-
-    // Edit Batch
-    public function editBatch($batchId)
-    {
-        $batch = collect($this->getSampleBatches())->firstWhere('id', $batchId);
-        if ($batch) {
-            $this->isEditing = true;
-            $this->editingId = $batchId;
-            $this->batchNumber = $batch['batchNumber'];
-            $this->breedType = $batch['breedType'];
-            $this->initialQuantity = $batch['initialQuantity'];
-            $this->currentQuantity = $batch['currentQuantity'];
-            $this->startDate = $batch['startDate'];
-            $this->expectedHarvestDate = $batch['expectedHarvestDate'];
-            $this->supplier = $batch['supplier'];
-        }
-    }
-
-    // Cancel Editing
-    public function cancelEdit()
-    {
-        $this->isEditing = false;
-        $this->editingId = null;
-        $this->reset();
     }
 }; ?>
 
-<div class="">
-    <div class="py-1">
-        <div class="max-w-full mx-0 sm:px-6 lg:px-0">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-2 text-gray-900 dark:text-gray-100">
-
-
-                    <!-- Batches Table -->
-                    <div class="">
-                        <h3 class="text-xl font-semibold mb-4">Current Batches</h3>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead class="bg-gray-50 dark:bg-gray-700">
-                                    <tr>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                            Batch Number</th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                            Breed Type</th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                            Quantity (Current/Initial)</th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                            Dates</th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                            Status</th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                            Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                                    @foreach ($batches as $batch)
-                                        <tr>
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                                {{ $batch['batchNumber'] }}</td>
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                                {{ $batch['breedType'] }}</td>
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                                {{ $batch['currentQuantity'] }}/{{ $batch['initialQuantity'] }}</td>
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                                <div>Start: {{ $batch['startDate'] }}</div>
-                                                <div>Harvest: {{ $batch['expectedHarvestDate'] }}</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    {{ $batch['status'] }}
-                                                </span>
-                                            </td>
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                                <button wire:click="editBatch({{ $batch['id'] }})"
-                                                    class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Edit</button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <x-mary-menu-separator />
-                    <h2 class="text-2xl font-semibold mb-6">{{ $isEditing ? 'Edit Batch' : 'New Batch' }}</h2>
-
-                    <!-- Batch Information Form -->
-                    <form wire:submit="saveBatch" class="space-y-6 mt-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Batch Number -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Batch
-                                    Number</label>
-                                <input type="text" wire:model="batchNumber"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                @error('batchNumber')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <!-- Breed Type -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Breed
-                                    Type</label>
-                                <input type="text" wire:model="breedType"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                @error('breedType')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <!-- Initial Quantity -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Initial
-                                    Quantity</label>
-                                <input type="number" wire:model="initialQuantity"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                @error('initialQuantity')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <!-- Current Quantity -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Current
-                                    Quantity</label>
-                                <input type="number" wire:model="currentQuantity"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                @error('currentQuantity')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <!-- Start Date -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Start
-                                    Date</label>
-                                <input type="date" wire:model="startDate"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                @error('startDate')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <!-- Expected Harvest Date -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Expected
-                                    Harvest Date</label>
-                                <input type="date" wire:model="expectedHarvestDate"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                @error('expectedHarvestDate')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <!-- Supplier -->
-                            <div class="md:col-span-2">
-                                <label
-                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier</label>
-                                <input type="text" wire:model="supplier"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                @error('supplier')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="flex justify-end space-x-3">
-                            @if ($isEditing)
-                                <button type="button" wire:click="cancelEdit"
-                                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                    Cancel
-                                </button>
-                            @endif
-                            <button type="submit"
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                {{ $isEditing ? 'Update Batch' : 'Create Batch' }}
-                            </button>
-                        </div>
-                    </form>
-                </div>
+<div class="py-6">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="md:flex md:items-center md:justify-between mb-6">
+            <div class="min-w-0 flex-1">
+                <h2
+                    class="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:truncate sm:text-3xl sm:tracking-tight">
+                    Batch Management
+                </h2>
+            </div>
+            <div class="mt-4 flex md:ml-4 md:mt-0">
+                <button type="button"
+                    class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    Add New Batch
+                </button>
             </div>
         </div>
+
+        <!-- Batch Cards -->
+        @foreach ($batches as $batch)
+            <div
+                class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-lg divide-y divide-gray-200 dark:divide-gray-700 mb-6">
+                <!-- Batch Header -->
+                <div class="px-4 py-5 sm:px-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white">
+                                Batch #{{ $batch['id'] }}
+                            </h3>
+                            <p class="mt-1 text-sm text-gray-500">
+                                {{ $batch['birdType'] }} - {{ $batch['breed'] }}
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span
+                                class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                {{ $batch['status'] }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Metrics Summary -->
+                <div class="px-4 py-5 sm:p-6 bg-gray-50 dark:bg-gray-900">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Current Birds</dt>
+                            <dd class="mt-1 text-2xl font-semibold text-gray-900 dark:text-white">
+                                {{ number_format($batch['currentStatus']['liveBirdCount']) }}
+                            </dd>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Current Weight</dt>
+                            <dd class="mt-1 text-2xl font-semibold text-gray-900 dark:text-white">
+                                {{ $batch['currentStatus']['growthStatus']['currentWeight'] }}
+                            </dd>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">FCR</dt>
+                            <dd class="mt-1 text-2xl font-semibold text-gray-900 dark:text-white">
+                                {{ $batch['currentStatus']['growthStatus']['fcr'] }}
+                            </dd>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Days to Harvest</dt>
+                            <dd class="mt-1 text-2xl font-semibold text-gray-900 dark:text-white">
+                                {{ floor(Carbon::parse($batch['harvestPlanning']['expectedDate'])->diffInDays(Carbon::now())) }}
+                            </dd>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Information -->
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Placement Information -->
+                        <div class="space-y-4">
+                            <h4 class="text-lg font-medium text-gray-900 dark:text-white">Placement Details</h4>
+                            <dl class="space-y-2">
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Arrival Date</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                        {{ $batch['placement']['arrivalDate'] }}</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Location</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                        {{ $batch['placement']['location']['house'] }} -
+                                        {{ $batch['placement']['location']['section'] }}
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Conditions</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                        Temp: {{ $batch['placement']['conditions']['temperature'] }},
+                                        Humidity: {{ $batch['placement']['conditions']['humidity'] }}
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <!-- Current Status -->
+                        <div class="space-y-4">
+                            <h4 class="text-lg font-medium text-gray-900 dark:text-white">Current Status</h4>
+                            <dl class="space-y-2">
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Mortality</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                        Total: {{ $batch['currentStatus']['mortality']['total'] }} birds
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Growth Status</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                        Daily Gain: {{ $batch['currentStatus']['growthStatus']['dailyGain'] }},
+                                        Uniformity: {{ $batch['currentStatus']['growthStatus']['uniformity'] }}
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Culling</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                        Total: {{ $batch['currentStatus']['culling']['total'] }} birds
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <!-- Harvest Planning -->
+                        <div class="space-y-4">
+                            <h4 class="text-lg font-medium text-gray-900 dark:text-white">Harvest Planning</h4>
+                            <dl class="space-y-2">
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Market Details</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                        {{ $batch['harvestPlanning']['marketDemand']['buyer'] }} -
+                                        {{ $batch['harvestPlanning']['marketDemand']['productType'] }}
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Processing</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                        {{ $batch['harvestPlanning']['processingSchedule']['date'] }} -
+                                        {{ $batch['harvestPlanning']['processingSchedule']['shift'] }}
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Target Metrics</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                        Weight: {{ $batch['harvestPlanning']['targetMetrics']['weight'] }},
+                                        Grade: {{ $batch['harvestPlanning']['targetMetrics']['grade'] }}
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="px-4 py-4 sm:px-6 bg-gray-50 dark:bg-gray-900">
+                    <div class="flex justify-end space-x-3">
+                        <button type="button"
+                            class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                            Update Status
+                        </button>
+                        <button type="button"
+                            class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-500 hover:bg-gray-50">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 </div>

@@ -5,7 +5,7 @@ namespace App\Rules;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Contracts\Validation\Rule;
 
-class Recaptcha implements Rule
+class ReCaptcha implements Rule
 {
     public function passes($attribute, $value)
     {

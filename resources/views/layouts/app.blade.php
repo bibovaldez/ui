@@ -22,9 +22,17 @@
 <body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200">
     <x-banner />
 
+      {{-- NAVBAR mobile only --}}
+      <x-mary-nav sticky class="lg:hidden">
+        <x-slot:actions>
+            <label for="main-drawer" class="lg:hidden mr-3">
+                <x-mary-icon name="o-bars-3" class="cursor-pointer" />
+            </label>
+        </x-slot:actions>
+    </x-mary-nav>
 
     <x-mary-main full-width>
-        <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-1000 lg:bg-inherit scrollbar-thin" right-mobile>
+        <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-100 lg:bg-inherit scrollbar-thin" right-mobile>
 
             {{-- BRAND AND TOGGLE THEME --}}
             <div class="flex items-center justify-between">
@@ -57,8 +65,11 @@
 
                 {{-- poultry --}}
                 {{-- <x-mary-menu-sub title="Poultry" icon="healthicons.o-animal-chicken"> --}}
-                    <x-mary-menu-item title="Batch Information" icon="o-information-circle" link="{{ route('batch-information') }}" />
                     <x-mary-menu-item title="Building Management" icon="far.building" link="{{ route('building-management') }}" />
+
+                    
+                    <x-mary-menu-item title="Batch Information" icon="o-information-circle" link="{{ route('batch-information') }}" />
+                   
                     <x-mary-menu-item title="Flock Management" icon="o-archive-box" link="{{ route('flock-management') }}" />
                     <x-mary-menu-item title="Inventory Management" icon="o-folder-open" link="{{ route('inventory-management') }}" />
                     <x-mary-menu-item title="Logistics" icon="iconpark.transporter-o" link="{{ route('logistics') }}" />

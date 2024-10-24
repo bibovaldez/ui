@@ -19,7 +19,7 @@ class extends Component {
     public function mount()
     {
         // Sample suppliers data
-        $this->suppliers = [
+                $this->suppliers = [
             1 => [
                 'id' => 1,
                 'name' => 'Premium Feed Co.',
@@ -38,54 +38,78 @@ class extends Component {
                 'rating' => 4.5,
                 'last_delivery' => '2024-10-18',
             ],
+            3 => [
+                'id' => 3,
+                'name' => 'Global Feeds Inc.',
+                'contact' => 'Michael Brown',
+                'phone' => '(555) 654-3210',
+                'email' => 'michael@globalfeeds.com',
+                'rating' => 4.7,
+                'last_delivery' => '2024-10-20',
+            ],
         ];
-
+        
         // Sample feed types data
         $this->feedTypes = [
             [
                 'id' => 1,
                 'name' => 'Starter Feed',
                 'type' => 'Crumble',
-                'current_stock' => 2500,
-                'reorder_level' => 1000,
+                'current_stock' => 5000,
+                'reorder_level' => 1500,
                 'unit' => 'kg',
-                'cost_per_unit' => 0.85,
+                'cost_per_unit' => 1.10,
                 'supplier_id' => 1,
                 'protein_content' => '22%',
                 'energy_content' => '3100 kcal/kg',
                 'last_quality_check' => '2024-10-20',
                 'quality_score' => 95,
-                'expiry_date' => '2024-12-15',
+                'expiry_date' => '2025-01-15',
             ],
             [
                 'id' => 2,
                 'name' => 'Grower Feed',
                 'type' => 'Pellet',
-                'current_stock' => 800,
-                'reorder_level' => 1200,
+                'current_stock' => 3000,
+                'reorder_level' => 2000,
                 'unit' => 'kg',
-                'cost_per_unit' => 0.78,
+                'cost_per_unit' => 0.95,
                 'supplier_id' => 2,
                 'protein_content' => '20%',
                 'energy_content' => '3050 kcal/kg',
                 'last_quality_check' => '2024-10-19',
                 'quality_score' => 92,
-                'expiry_date' => '2024-12-20',
+                'expiry_date' => '2025-02-20',
             ],
             [
                 'id' => 3,
                 'name' => 'Finisher Feed',
                 'type' => 'Pellet',
-                'current_stock' => 1800,
-                'reorder_level' => 1000,
+                'current_stock' => 4000,
+                'reorder_level' => 1500,
                 'unit' => 'kg',
-                'cost_per_unit' => 0.72,
+                'cost_per_unit' => 0.85,
                 'supplier_id' => 1,
                 'protein_content' => '18%',
                 'energy_content' => '3200 kcal/kg',
                 'last_quality_check' => '2024-10-18',
                 'quality_score' => 94,
-                'expiry_date' => '2024-12-25',
+                'expiry_date' => '2025-03-25',
+            ],
+            [
+                'id' => 4,
+                'name' => 'Layer Feed',
+                'type' => 'Mash',
+                'current_stock' => 2500,
+                'reorder_level' => 1000,
+                'unit' => 'kg',
+                'cost_per_unit' => 1.20,
+                'supplier_id' => 3,
+                'protein_content' => '16%',
+                'energy_content' => '3000 kcal/kg',
+                'last_quality_check' => '2024-10-22',
+                'quality_score' => 90,
+                'expiry_date' => '2025-01-30',
             ],
         ];
 
@@ -168,7 +192,7 @@ class extends Component {
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-lg p-4">
                     <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">Total Value</h3>
                     <p class="text-3xl font-bold text-gray-900 dark:text-white">
-                        ${{ number_format(array_sum(array_map(fn($feed) => $feed['current_stock'] * $feed['cost_per_unit'], $feedTypes)), 2) }}
+                        ₱{{ number_format(array_sum(array_map(fn($feed) => $feed['current_stock'] * $feed['cost_per_unit'], $feedTypes)), 2) }}
                     </p>
                 </div>
             </div>
@@ -258,7 +282,7 @@ class extends Component {
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                                    ${{ number_format($feed['cost_per_unit'], 2) }}/{{ $feed['unit'] }}
+                                                    ₱{{ number_format($feed['cost_per_unit'], 2) }}/{{ $feed['unit'] }}
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">

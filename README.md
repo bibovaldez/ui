@@ -47,11 +47,26 @@
     - Purchase order details
     - Health certificates
   - Placement date
+    - Arrival date
+    - Placement quantity
+    - Placement location
+    - Placement conditions
   - Initial quantity
+    - Total birds placed
+    - Mortality rate
+    - Expected yield
+    - Growth targets
   - Current count
+    - Live bird count
+    - Mortality count
+    - Culling count
+    - Growth status
   - Expected harvest date
-  - Genetic line specifications
-  - Parent flock information
+    - Market preparation
+    - Processing schedule
+    - Target weight
+    - Market demand
+
 
 - **Daily Monitoring**
   - Mortality tracking
