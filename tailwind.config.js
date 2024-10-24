@@ -23,6 +23,8 @@ export default {
     plugins: [
 		forms,
 		typography,
-		require("daisyui")
+		require("daisyui"),
+		require('tailwind-scrollbar'),
 	],
+	darkMode: 'class', 
 };

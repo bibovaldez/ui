@@ -6,14 +6,17 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "codeat3/blade-iconpark": "^1.6",
         "laravel/framework": "^11.9",
         "laravel/jetstream": "^5.3",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "livewire/volt": "^1.6",
+        "owenvoke/blade-fontawesome": "^2.6",
         "robsontenorio/mary": "^1.41",
-        "spatie/laravel-permission": "*"
+        "spatie/laravel-permission": "*",
+        "troccoli/blade-health-icons": "^4.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -21,7 +21,8 @@ use Laravel\Fortify\Http\Controllers\TwoFactorSecretKeyController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 use Laravel\Fortify\RoutePath;
 use App\Http\Controllers\PermissionController;
-
+use Livewire\Volt\Volt;
+ 
 
 Route::resource('permissions', PermissionController::class);
 
@@ -41,7 +42,19 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Volt::route('/dashboard', 'dashboard')->name('dashboard');
+    // Batch_Information
+    Volt::route('/dashboard/poultry/info', 'Batch_Information')->name('batch-information');
+    // Production_Metrics
+    Volt::route('/dashboard/poultry/metrics', 'Production_Metrics')->name('production-metrics');
+    // Building_Management
+    Volt::route('/dashboard/poultry/building', 'Building_Management')->name('building-management');
+    // Flock_Management
+    Volt::route('/dashboard/poultry/flock', 'Flock_Management')->name('flock-management');
+    // Inventory_Management
+    Volt::route('/dashboard/poultry/inventory', 'Inventory_Management')->name('inventory-management');
+    // Logistic
+    Volt::route('/dashboard/poultry/logistic', 'Logistic')->name('logistics');
+    // Report
+    Volt::route('/dashboard/poultry/report', 'Report')->name('report');
 });
