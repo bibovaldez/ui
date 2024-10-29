@@ -4,13 +4,12 @@ use Livewire\Volt\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 
-new 
-#[Layout('layouts.app')]
-#[Title('Logistics Dashboard')]
-class extends Component {
+new #[Layout('layouts.app')]
+    #[Title('Logistics Dashboard')] 
+    class extends Component {
+    
     public $activeTab = 'deliveries';
     
-    // Sample data - In production, this would come from your database
     public $deliverySchedules = [
         [
             'id' => 1,
@@ -31,7 +30,7 @@ class extends Component {
     public $customerOrders = [
         [
             'id' => 1,
-            'customer' => 'angkel ben',
+            'customer' => 'Angkel Ben',
             'order_date' => '2024-10-24',
             'status' => 'Processing',
             'total_items' => 2,
@@ -48,14 +47,14 @@ class extends Component {
     public $inventory = [
         [
             'id' => 1,
-            'product' => 'Feeds starter',
+            'product' => 'Feeds Starter',
             'stock' => 1003,
             'reorder_level' => 50,
             'status' => 'In Stock',
         ],
         [
             'id' => 2,
-            'product' => 'Feeds grower',
+            'product' => 'Feeds Grower',
             'stock' => 500,
             'reorder_level' => 45,
             'status' => 'Low Stock',
@@ -65,40 +64,50 @@ class extends Component {
     public function setActiveTab($tab) {
         $this->activeTab = $tab;
     }
+
+    public function getStatusColor($status) {
+        return match ($status) {
+            'Pending' => 'yellow',
+            'In Transit', 'Shipped' => 'blue',
+            'Processing' => 'indigo',
+            'Low Stock' => 'red',
+            default => 'green',
+        };
+    }
 }; ?>
 
-<div class="p-6">
+<div class="p-6 space-y-6">
     <!-- Dashboard Header -->
-    <div class="mb-6">
+    <header class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Logistics Dashboard</h1>
-    </div>
+    </header>
 
     <!-- Navigation Tabs -->
-    <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+    <nav class="border-b border-gray-200 dark:border-gray-700">
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
             <li class="mr-2">
                 <button wire:click="setActiveTab('deliveries')" 
-                    class="inline-block p-4 rounded-t-lg {{ $activeTab === 'deliveries' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500' }}">
+                    class="inline-block p-4 rounded-t-lg {{ $activeTab === 'deliveries' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-600' }}">
                     Delivery Schedules
                 </button>
             </li>
             <li class="mr-2">
                 <button wire:click="setActiveTab('orders')"
-                    class="inline-block p-4 rounded-t-lg {{ $activeTab === 'orders' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500' }}">
+                    class="inline-block p-4 rounded-t-lg {{ $activeTab === 'orders' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-600' }}">
                     Customer Orders
                 </button>
             </li>
             <li class="mr-2">
                 <button wire:click="setActiveTab('inventory')"
-                    class="inline-block p-4 rounded-t-lg {{ $activeTab === 'inventory' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500' }}">
+                    class="inline-block p-4 rounded-t-lg {{ $activeTab === 'inventory' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-600' }}">
                     Inventory Status
                 </button>
             </li>
         </ul>
-    </div>
+    </nav>
 
-    <!-- Content Sections -->
-    <div class="mt-6">
+    <!-- Content Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
         <!-- Delivery Schedules -->
         @if($activeTab === 'deliveries')
         <div class="overflow-x-auto">
@@ -114,13 +123,12 @@ class extends Component {
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($deliverySchedules as $schedule)
-                    <tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td class="px-6 py-4 whitespace-nowrap">{{ $schedule['id'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $schedule['supplier'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $schedule['delivery_date'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                {{ $schedule['status'] === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $this->getStatusColor($schedule['status']) }}-100 text-{{ $this->getStatusColor($schedule['status']) }}-800">
                                 {{ $schedule['status'] }}
                             </span>
                         </td>
@@ -147,13 +155,12 @@ class extends Component {
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($customerOrders as $order)
-                    <tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td class="px-6 py-4 whitespace-nowrap">{{ $order['id'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $order['customer'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $order['order_date'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                {{ $order['status'] === 'Processing' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $this->getStatusColor($order['status']) }}-100 text-{{ $this->getStatusColor($order['status']) }}-800">
                                 {{ $order['status'] }}
                             </span>
                         </td>
@@ -180,14 +187,13 @@ class extends Component {
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($inventory as $item)
-                    <tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td class="px-6 py-4 whitespace-nowrap">{{ $item['id'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $item['product'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $item['stock'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $item['reorder_level'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                {{ $item['status'] === 'Low Stock' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $this->getStatusColor($item['status']) }}-100 text-{{ $this->getStatusColor($item['status']) }}-800">
                                 {{ $item['status'] }}
                             </span>
                         </td>

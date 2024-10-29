@@ -5,7 +5,9 @@ use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Volt\Component;
 
-new #[Layout('layouts.app')] #[Title('Poultry Farm Management')] 
+new 
+#[Layout('layouts.app')] 
+#[Title('Building Management')] 
 class extends Component {
     public $buildings = [];
     public $selectedTab;
