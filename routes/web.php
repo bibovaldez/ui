@@ -44,17 +44,17 @@ Route::middleware([
 ])->group(function () {
     Volt::route('/dashboard', 'dashboard')->name('dashboard');
     // Batch_Information
-    Volt::route('/dashboard/poultry/info', 'Batch_Information')->name('batch-information');
+    Volt::route('/dashboard/poultry/info', 'batch_information')->name('batch-information');
     // Production_Metrics
-    Volt::route('/dashboard/poultry/metrics', 'Production_Metrics')->name('production-metrics');
+    Volt::route('/dashboard/poultry/metrics', 'production_metrics')->name('production-metrics');
     // Building_Management
-    Volt::route('/dashboard/poultry/building', 'Building_Management')->name('building-management');
+    Volt::route('/dashboard/poultry/building', 'building_management')->name('building-management');
     // Flock_Management
-    Volt::route('/dashboard/poultry/flock', 'Flock_Management')->name('flock-management');
+    Volt::route('/dashboard/poultry/flock', 'flock_management')->name('flock-management');
     // Inventory_Management
-    Volt::route('/dashboard/poultry/inventory', 'Inventory_Management')->name('inventory-management');
+    Volt::route('/dashboard/poultry/inventory', 'inventory_management')->name('inventory-management');
     // Logistic
-    Volt::route('/dashboard/poultry/logistic', 'Logistic')->name('logistics');
+    Volt::route('/dashboard/poultry/logistic', 'logistic')->name('logistics');
     // Report
-    Volt::route('/dashboard/poultry/report', 'Report')->name('report');
+    Volt::route('/dashboard/poultry/report', 'report')->name('report');
 });
