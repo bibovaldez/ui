@@ -18,7 +18,7 @@
 
 ### **Building Management**
 - **Buildings Overview**
-  - List of all buildings, with occupancy, capacity, and environmental metrics.
+  - List of all buildings, with occupancy, capacity, and environmental metrics. as
 - **Cleaning & Maintenance**
   - Cleaning schedules, disinfectant usage, and maintenance logs.
 - **Environmental Controls**

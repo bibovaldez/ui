@@ -5,93 +5,50 @@ use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Volt\Component;
 
-new #[Layout('layouts.app')] #[Title('Building Management')] 
-class extends Component {
+new #[Layout('layouts.app')] #[Title('Building Management')] class extends Component {
     public $buildings = [];
     public $selectedTab;
+    // Modal for diferent buildin
+    public $buildingModals = [];
 
     public function mount()
     {
+        $this->buildingModals = [];
         $this->selectedTab = 'building-tab';
         // Realistic poultry farm building data
         $this->buildings = [
             [
                 'id' => 'BH-001',
-                'name' => 'Broiler House 1',
-                'type' => 'Broiler',
-                'construction_date' => '2020-03-15',
-                'square_footage' => 20000,
+                'name' => 'Fuyo Farm',
+                'type' => [
+                    'type' => 'Broiler',
+                    'breed' => 'Ross 308',
+                ],
                 'max_capacity' => 24000, // Based on standard density of 1.2 sq ft per bird
                 'current_occupancy' => 22800,
                 'status' => 'Active',
-                'environmental_specs' => [
-                    'ventilation' => 'Tunnel Ventilation',
-                    'lighting' => 'LED Dimmer System',
-                    'temp_control' => 'Automated Climate Control',
-                    'humidity_control' => 'Evaporative Cooling',
+                'poultry_manager' => [
+                    'name' => 'Mang Tomas',
+                    'phone' => '0912345678',
+                    'email' => 'mangtomas@example.com',
                 ],
-                'cleaning_status' => 'Completed',
-                'last_cleaning' => '2024-10-01',
-                'next_cleaning' => '2024-11-15', // After flock departure
                 'last_inspection' => '2024-10-05',
                 'next_maintenance' => '2024-11-02',
                 'current_flock' => [
-                    'placement_date' => '2024-09-20',
-                    'age_days' => 34,
-                    'breed' => 'Ross 308',
-                    'expected_harvest' => '2024-11-01',
+                    'placement_date' => '2024-10-20',
+                    'breed' => 'Ross 308', // 28 days old before harvest
+                    'expected_harvest' => '2024-11-17',
                 ],
-            ],
-            [
-                'id' => 'LH-001',
-                'name' => 'Layer House A',
-                'type' => 'Layer',
-                'construction_date' => '2021-06-20',
-                'square_footage' => 25000,
-                'max_capacity' => 20000, // Lower density for layers
-                'current_occupancy' => 19500,
-                'status' => 'Active',
-                'environmental_specs' => [
-                    'ventilation' => 'Cross Ventilation',
-                    'lighting' => 'Programmable LED',
-                    'temp_control' => 'Zone Control System',
-                    'humidity_control' => 'Misting System',
-                ],
-                'cleaning_status' => 'In Progress',
-                'last_cleaning' => '2024-09-15',
-                'next_cleaning' => '2024-11-20',
-                'last_inspection' => '2024-10-02',
-                'next_maintenance' => '2024-10-30',
-                'current_flock' => [
-                    'placement_date' => '2024-05-15',
-                    'age_days' => 162,
-                    'breed' => 'Hy-Line Brown',
-                    'production_phase' => 'Peak Lay',
-                ],
-            ],
-            [
-                'id' => 'BH-002',
-                'name' => 'Broiler House 2',
-                'type' => 'Broiler',
-                'construction_date' => '2020-03-15',
-                'square_footage' => 18000,
-                'max_capacity' => 21600,
-                'current_occupancy' => 0, // Empty for cleaning
-                'status' => 'Inactive',
-                'environmental_specs' => [
-                    'ventilation' => 'Tunnel Ventilation',
-                    'lighting' => 'LED Dimmer System',
-                    'temp_control' => 'Automated Climate Control',
-                    'humidity_control' => 'Evaporative Cooling',
-                ],
-                'cleaning_status' => 'In Progress',
-                'last_cleaning' => '2024-10-10',
-                'next_cleaning' => '2024-11-25',
-                'last_inspection' => '2024-10-12',
-                'next_maintenance' => '2024-10-28',
-                'current_flock' => null, // No current flock
             ],
         ];
+        // Initialize modal state for each building
+        foreach ($this->buildings as $building) {
+            $this->buildingModals[$building['id']] = false;
+        }
+    }
+    public function toggleModal($buildingId)
+    {
+        $this->buildingModals[$buildingId] = !$this->buildingModals[$buildingId];
     }
 
     public function getOccupancyPercentage($building)
@@ -123,10 +80,10 @@ class extends Component {
 
 <div>
 
-   {{-- stats --}}
-    <div class="flex flex-row gap-4 overflow-x-auto whitespace-nowrap p-4">
+    {{-- stats --}}
+    <div class="flex flex-row gap-4 overflow-x-auto whitespace-nowrap">
         <x-mary-stat title="Total Buildings" value="{{ count($buildings) }}" icon="o-building-office-2"
-            tooltip-right="Total number of houses" color="text-gray-600" class="text-gray-500" />
+            tooltip-right="Total number of registered building" color="text-gray-600" class="text-gray-500" />
         <x-mary-stat title="Total Capacity"
             value="{{ number_format(array_sum(array_column($buildings, 'max_capacity'))) }}"
             icon="healthicons.o-animal-chicken" tooltip-left="Maximum bird capacity" color="text-blue-600"
@@ -135,7 +92,7 @@ class extends Component {
             value="{{ number_format(array_sum(array_column($buildings, 'current_occupancy'))) }}" icon="o-chart-bar"
             tooltip-left="Total current birds" color="text-green-600" class="text-green-500" />
     </div>
-    
+
     {{-- tabs/ table --}}
     <div class="py-2">
         <div class="max-w-full mx-0 sm:px-6 lg:px-0">
@@ -160,32 +117,181 @@ class extends Component {
                                         Status</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Cleaning</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Flock Details</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Next Maintenance</th>
+                                        Maintenance</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-800">
                                 @foreach ($buildings as $building)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                                {{ $building['id'] }} - {{ $building['name'] }}
-                                            </div>
-                                            <div class="text-xs text-gray-500">
-                                                {{ number_format($building['square_footage']) }} sq ft
-                                            </div>
+                                            <x-mary-modal wire:model="buildingModals.{{ $building['id'] }}"
+                                                class="backdrop-blur" title="{{ $building['name'] }}"
+                                                subtitle="{{ $building['id'] }}" separator box-class="max-w-[40rem]"
+                                                persistent>
+
+                                                {{-- Building Overview Section --}}
+                                                <div class="space-y-6 p-4">
+                                                    {{-- Manager Information Card --}}
+                                                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                                        <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                                                            <x-mary-icon name="o-user-circle" class="w-5 h-5" />
+                                                            Manager Information
+                                                        </h3>
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div>
+                                                                <div
+                                                                    class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Name</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ $building['poultry_manager']['name'] }}</div>
+                                                            </div>
+                                                            <div>
+                                                                <div
+                                                                    class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Contact</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ $building['poultry_manager']['phone'] }}</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ $building['poultry_manager']['email'] }}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Building Details Card --}}
+                                                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                                        <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                                                            <x-mary-icon name="o-building-office-2" class="w-5 h-5" />
+                                                            Building Details
+                                                        </h3>
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div>
+                                                                <div
+                                                                    class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Type & Breed</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ $building['type']['type'] }} -
+                                                                    {{ $building['type']['breed'] }}</div>
+                                                            </div>
+                                                            <div>
+                                                                <div
+                                                                    class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Capacity</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ number_format($building['current_occupancy']) }}
+                                                                    / {{ number_format($building['max_capacity']) }}
+                                                                    ({{ $this->getOccupancyPercentage($building) }}%)
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div>
+                                                                <div
+                                                                    class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Breed</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ $building['current_flock']['breed'] }}</div>
+                                                            </div>
+                                                            <div>
+                                                                <div
+                                                                    class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Age</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ date_diff(date_create($building['current_flock']['placement_date']), date_create('now'))->format('%a days') }}
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <div
+                                                                    class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Placement Date</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ date('M d, Y', strtotime($building['current_flock']['placement_date'])) }}
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <div
+                                                                    class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Expected Harvest</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ date('M d, Y', strtotime($building['current_flock']['expected_harvest'])) }}
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    {{-- Maintenance Information --}}
+                                                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                                        <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                                                            <x-mary-icon name="o-wrench-screwdriver" class="w-5 h-5" />
+                                                            Maintenance Schedule
+                                                        </h3>
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div>
+                                                                <div
+                                                                    class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Last Inspection</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ date('M d, Y', strtotime($building['last_inspection'])) }}
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <div
+                                                                    class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Next Maintenance</div>
+                                                                <div class="text-sm text-gray-900 dark:text-white">
+                                                                    {{ date('M d, Y', strtotime($building['next_maintenance'])) }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="flex justify-end gap-2">
+                                                    <x-mary-button label="Close" icon="o-x-mark"
+                                                        wire:click="toggleModal('{{ $building['id'] }}')"
+                                                        class="bg-blue-500 hover:bg-blue-600 text-white" />
+                                                </div>
+
+                                            </x-mary-modal>
+
+                                            <x-mary-popover>
+                                                <x-slot name="trigger"
+                                                    wire:click="toggleModal('{{ $building['id'] }}')">
+                                                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                        {{ $building['name'] }}
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        {{ $building['id'] }}
+                                                    </div>
+                                                </x-slot>
+                                                <x-slot name="content">
+                                                    <div class="text-sm text-gray-900 dark:text-white">
+                                                        Manager Name: {{ $building['poultry_manager']['name'] }}
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        Phone: {{ $building['poultry_manager']['phone'] }}
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        Email: {{ $building['poultry_manager']['email'] }}
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        Click for more details
+                                                    </div>
+                                                </x-slot>
+                                            </x-mary-popover>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm text-gray-500 dark:text-gray-300">
-                                                {{ $building['type'] }}
+                                                {{ $building['type']['type'] }}
                                             </div>
                                             <div class="text-xs text-gray-400">
-                                                {{ $building['environmental_specs']['ventilation'] }}
+                                                {{ $building['type']['breed'] }}
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
@@ -205,29 +311,43 @@ class extends Component {
                                                 {{ $building['status'] }}
                                             </span>
                                         </td>
+
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $this->getCleaningStatusColor($building['cleaning_status']) }}-100 text-{{ $this->getCleaningStatusColor($building['cleaning_status']) }}-800">
-                                                {{ $building['cleaning_status'] }}
-                                            </span>
-                                            <div class="text-xs text-gray-500 mt-1">
-                                                Next: {{ date('M d', strtotime($building['next_cleaning'])) }}
-                                            </div>
+                                            <x-mary-popover>
+                                                <x-slot name="trigger">
+                                                    @if ($building['current_flock'])
+                                                        <div class="text-sm text-gray-900 dark:text-white">
+                                                            {{ $building['current_flock']['breed'] }}
+                                                        </div>
+                                                        <div class="text-xs text-gray-500">
+                                                            Age:
+                                                            {{ date_diff(date_create($building['current_flock']['placement_date']), date_create('now'))->format('%a days') }}
+                                                        </div>
+                                                    @else
+                                                        <div class="text-sm text-gray-500">No Active Flock</div>
+                                                    @endif
+                                                </x-slot>
+                                                <x-slot name="content">
+                                                    @if ($building['current_flock'])
+                                                        Placement Date:
+                                                        {{ date('M d, Y', strtotime($building['current_flock']['placement_date'])) }}
+                                                        <br>
+                                                        Expected Harvest:
+                                                        {{ date('M d, Y', strtotime($building['current_flock']['expected_harvest'])) }}
+                                                        <br>
+                                                    @endif
+                                                </x-slot>
+                                            </x-mary-popover>
+
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            @if ($building['current_flock'])
-                                                <div class="text-sm text-gray-900 dark:text-white">
-                                                    {{ $building['current_flock']['breed'] }}
-                                                </div>
-                                                <div class="text-xs text-gray-500">
-                                                    Age: {{ $building['current_flock']['age_days'] }} days
-                                                </div>
-                                            @else
-                                                <div class="text-sm text-gray-500">No Active Flock</div>
-                                            @endif
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            {{-- last and next --}}
                                             <div class="text-sm text-gray-500 dark:text-gray-300">
+                                                Last Inspection:
+                                                {{ date('M d, Y', strtotime($building['last_inspection'])) }}
+                                            </div>
+                                            <div class="text-xs text-gray-400">
+                                                Next Maintenance:
                                                 {{ date('M d, Y', strtotime($building['next_maintenance'])) }}
                                             </div>
                                         </td>
@@ -240,6 +360,11 @@ class extends Component {
             </div>
         </div>
     </div>
+
+
+
+    {{-- tabs --}}
+
 
 
 </div>
