@@ -42,7 +42,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Volt::route('/dashboard', 'dashboard')->name('dashboard');
+    Volt::route('/main/dashboard', 'dashboard')->name('maindashboard');
     // Batch_Information
     Volt::route('/dashboard/poultry/info', 'batch_information')->name('batch-information');
     // Production_Metrics
